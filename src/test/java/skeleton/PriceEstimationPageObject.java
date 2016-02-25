@@ -1,12 +1,17 @@
 package skeleton;
 
-import Helper.UIUtil;
-import Helper.WDUtil;
+import Helper.*;
+import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
 
 public class PriceEstimationPageObject {
+
+    @FindBy(id="languageSwitch")
+    public WebElement languageSwitch;
+
     //@FindBy(how = How.ID, using = "makeId")
     @FindBy(id="makeId")
     public WebElement make;
@@ -48,14 +53,50 @@ public class PriceEstimationPageObject {
         UIUtil.waitAndSelectByText(fuelId, fuel);
         UIUtil.waitAndSelectByText(powerSel, power);
         UIUtil.waitAndSelectByText(equipmentLineSel, equipmentLine);
-        mileageInp.sendKeys(mileage);
+        UIUtil.waitAndEnterText(mileageInp, mileage);
+        //mileageInp.sendKeys(mileage);
         priceEstimationFormButton.click();
 
         //make.selectByValue("Alfa Romeo");
     }
 
-}
+    public void switchLanguage(String lang) {
 
+        UIUtil.waitAndSelectByText(languageSwitch, lang);
+        UIUtil.waitForElementToBeClickable(languageSwitch);
+    }
+
+    // Check selected language is used
+    public void checkLanguage(String lang) {
+        // Check selected language
+        Assert.assertTrue(new Select(languageSwitch).getFirstSelectedOption().getText().equals(lang));
+        // Check Text in make list and culture Cookie
+        if (WDUtil.getBrowser().equals(Browsers.Safari)) {
+            //UIUtil.waitForElementToBeClickable(make); // Does not work. To be improved.
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        switch (lang) {
+            case "NL":
+                Assert.assertTrue(CountrynlBE.makeText.equals(new Select(make).getFirstSelectedOption().getText()));
+                Assert.assertTrue(CountrynlBE.culture.equals(WDUtil.getWebDriver().manage().getCookieNamed("culture").getValue()));
+                break;
+            case "FR":
+                Assert.assertTrue(CountryfrBE.makeText.equals(new Select(make).getFirstSelectedOption().getText()));
+                Assert.assertTrue(CountryfrBE.culture.equals(WDUtil.getWebDriver().manage().getCookieNamed("culture").getValue()));
+                break;
+        }
+    }
+}
+    /*
+        Set<Cookie> cookiesList =  WDUtil.getWebDriver().manage().getCookies();
+    for(Cookie getcookies :cookiesList) {
+            System.out.println(getcookies );
+            }
+    */
 
     /*
     @FindBy(how = How.ID, using = "equipmentLine")
