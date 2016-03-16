@@ -6,10 +6,12 @@ import Helper.Environment;
 import Helper.WDUtil;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
@@ -17,7 +19,13 @@ public class PriceEstimationStepdefs {
 
     @Given("^User opens price estimation tool on \"([^\"]*)\"$")
     public void userOpensPriceEstimationTool(String url) throws Throwable {
-        WDUtil.startDriver(url.replace("<env>", Environment.Dev), Browsers.Safari);
+        //WDUtil.startDriver(url.replace("<env>", Environment.Dev), Browsers.Firefox);
+        WDUtil.getWebDriver().get(url.replace("<env>", Environment.Dev));
+        WDUtil.getWebDriver().manage().addCookie(new Cookie("as24test", "true"));
+//        Set<Cookie> cookiesList =  WDUtil.getWebDriver().manage().getCookies();
+//        for(Cookie getcookies :cookiesList) {
+//            System.out.println(getcookies );
+//        }
     }
 
     @When("^User enters his car data \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" and submits$")
@@ -25,6 +33,11 @@ public class PriceEstimationStepdefs {
 
         new PriceEstimationPageObject().fillFormAndSubmit(makeId, month, year, model, fuel, power, equipmentline, mileage);
         new PriceEstimationDetailPageObject().fillFormAndSubmit();
+    }
+
+    @And("^User selects all additional equipment$")
+    public void userSelectsAllAdditionalEquipment() throws Throwable {
+        new PriceEstimationDetailPageObject().fillFormAndSubmitAllEquip();
     }
 
     @When("^User enters default \"([^\"]*)\"$")
@@ -37,6 +50,10 @@ public class PriceEstimationStepdefs {
             case "CarDataDE.LocalHost":
                 new PriceEstimationPageObject().fillFormAndSubmit(CarDataDE.LocalHost.makeId, CarDataDE.LocalHost.firstRegistrationMonth, CarDataDE.LocalHost.firstRegistrationYear, CarDataDE.LocalHost.vehicleGroupId,
                         CarDataDE.LocalHost.fuelId, CarDataDE.LocalHost.power, CarDataDE.LocalHost.equipmentLine, CarDataDE.LocalHost.mileage);
+                break;
+            case "CarDataDE.LocalDocker":
+                new PriceEstimationPageObject().fillFormAndSubmit(CarDataDE.LocalDocker.makeId, CarDataDE.LocalDocker.firstRegistrationMonth, CarDataDE.LocalDocker.firstRegistrationYear, CarDataDE.LocalDocker.vehicleGroupId,
+                        CarDataDE.LocalDocker.fuelId, CarDataDE.LocalDocker.power, CarDataDE.LocalDocker.equipmentLine, CarDataDE.LocalDocker.mileage);
                 break;
         }
     }
@@ -73,6 +90,10 @@ public class PriceEstimationStepdefs {
         new PriceEstimationDetailPageObject().loopColors();
     }
 
+    @Before
+    public void setup(Scenario scenario) throws Exception {
+        WDUtil.startDriver(Browsers.Firefox);
+    }
     @After
     public void teardown(Scenario scenario) throws Exception {
         Boolean prevScenarioFailed = scenario.isFailed();
@@ -84,5 +105,11 @@ public class PriceEstimationStepdefs {
         WDUtil.getWebDriver().close();
         // Close Safari
         WDUtil.getWebDriver().quit();
+    }
+
+
+    @Then("^The right error page is shown with error messages \"([^\"]*)\" \"([^\"]*)\"$")
+    public void theRightErrorPageIsShownWithErrorMessages(String errText, String errButtonText) throws Throwable {
+        new ErrorPageObject().checkErrorPage(errText, errButtonText);
     }
 }

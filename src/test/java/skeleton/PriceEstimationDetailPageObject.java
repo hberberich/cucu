@@ -18,7 +18,6 @@ public class PriceEstimationDetailPageObject {
     @FindBy(xpath="//a[@href='#makeModelSummary']")
     public WebElement standardEquipLink;
 
-
     @FindBy(xpath="//div[@id='standardEquipmentToggle']/a/span[@class='collapse1 expander-icon in']")
     public WebElement standardEquipmentExpanded;
 
@@ -56,6 +55,29 @@ public class PriceEstimationDetailPageObject {
         //modelSizeTopButton.click();
 
     }
+
+    public void fillFormAndSubmitAllEquip() throws InterruptedException {
+
+        // Sample color
+        WDUtil.getWebDriver().findElement(By.xpath("//label[@for='ep.bodyColorId-2']")).click();
+
+        // Just check all equipments
+        List<WebElement> we = WDUtil.getWebDriver().findElements(By.xpath("//input[@type='checkbox']"));
+        String[] names = new String[we.size()];
+        for (int i = 0; i < we.size(); i++) {
+            names[i] =  we.get(i).getAttribute("name").toString();
+            WebElement label = WDUtil.getWebDriver().findElement(By.xpath("//input[@name='" + names[i] + "']/../label"));
+            System.out.print(names[i] + "  " + label.getText() + ", ");
+            label.click();
+        }
+//        for (int i = 0; i < we.size(); i++) {
+//            WebElement label = WDUtil.getWebDriver().findElement(By.xpath("//input[@name='" + names[i] + "']/../label"));
+//            System.out.print(names[i] + "  " + label.getText() + ", ");
+//            label.click();
+//        }
+        UIUtil.waitAndClick(withFullModelButton);
+    }
+
 
     public void loopEquip() {
 

@@ -24,10 +24,39 @@ public class WDUtil {
         return webDriver;
 
     }
+    public static void startDriver(String browser) {
+        //browser = System.getProperty("BROWSER");
+        if (browser == null) browser = Browsers.Safari;
 
+        WebDriver driver;
+        switch (browser.toLowerCase()) {
+            case "firefox":
+                driver = new FirefoxDriver();
+                break;
+            case "chrome":
+                driver = new ChromeDriver();
+                break;
+            case "safari":
+                driver = new SafariDriver();
+                ((JavascriptExecutor) driver).executeScript(
+                        "window.focus();");
+                break;
+            case "phantomjs":
+                driver = new PhantomJSDriver();
+                break;
+            default:
+                driver = new FirefoxDriver();
+                break;
+        }
+        setWebDriver(driver);
+
+        driver.manage().window().maximize();
+        driver.manage().window().setPosition(new Point(1921, 1));
+
+    }
     public static void startDriver(String url, String browser) {
 
-        browser = System.getProperty("BROWSER");
+        //browser = System.getProperty("BROWSER");
         if (browser == null) browser = Browsers.Safari;
 
         WebDriver driver;
