@@ -26,7 +26,7 @@ public class WDUtil {
     }
     public static void startDriver(String browser) {
         //browser = System.getProperty("BROWSER");
-        if (browser == null) browser = Browsers.Safari;
+        if (browser == null) browser = Browsers.Firefox;
 
         WebDriver driver;
         switch (browser.toLowerCase()) {
@@ -49,7 +49,7 @@ public class WDUtil {
                 break;
         }
         setWebDriver(driver);
-
+        setBrowser(browser);
         driver.manage().window().maximize();
         driver.manage().window().setPosition(new Point(1921, 1));
 

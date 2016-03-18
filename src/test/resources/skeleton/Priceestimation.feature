@@ -20,7 +20,8 @@ Feature: Priceestimation
     Then The price estimation is accurate
     Examples:
       | url                                          | cardata               |
-      | http://192.168.99.100:8080/fahrzeugbewertung | CarDataDE.LocalDocker |
+      | https://<env>.autoscout24.de/fahrzeugbewertung| CarDataDE.DevProd |
+      #| http://192.168.99.100:8080/fahrzeugbewertung | CarDataDE.LocalDocker |
 
   @acceptance
   Scenario Outline: User changes language on be site
