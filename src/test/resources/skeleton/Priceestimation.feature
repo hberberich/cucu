@@ -8,8 +8,8 @@ Feature: Priceestimation
     Then The price estimation is accurate
     Examples:
       | url                                            | makeId      | month | year | model                       | fuel    | power     | equipmentline                    | mileage |
-#      | https://<env>.autoscout24.de/fahrzeugbewertung | Alfa Romeo  | 03    | 2011 | Giulietta Limousine 5 Türen | Benzin  | 170 (125) | 1.4 TB 16V Multiair              | 30000   |
-#      | https://<env>.autoscout24.be/evaluationvoiture | Alfa Romeo  | 03    | 2011 | Giulietta Berline 5 Deuren  | Benzine | 170 (125) | 1.4i Multi Air Progression Start | 30000   |
+      | https://<env>.autoscout24.de/fahrzeugbewertung | Alfa Romeo  | 03    | 2011 | Giulietta Limousine 5 Türen | Benzin  | 170 (125) | 1.4 TB 16V Multiair              | 30000   |
+      | https://<env>.autoscout24.be/evaluationvoiture | Alfa Romeo  | 03    | 2011 | Giulietta Berline 5 Deuren  | Benzine | 170 (125) | 1.4i Multi Air Progression Start | 30000   |
       | http://localhost:9000/fahrzeugbewertung?featurebee=use-last-showcar-ui-version=true        | Alfa Romeo  | 03    | 2011 | Giulietta Limousine 5 Türen | Benzin  | 170 (125) | Grundaustattung                  | 30000   |
 
   @acceptance
