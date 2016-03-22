@@ -20,7 +20,11 @@ public class PriceEstimationStepdefs {
     @Given("^User opens price estimation tool on \"([^\"]*)\"$")
     public void userOpensPriceEstimationTool(String url) throws Throwable {
         //WDUtil.startDriver(url.replace("<env>", Environment.Dev), Browsers.Firefox);
-        WDUtil.getWebDriver().get(url.replace("<env>", Environment.Prod) + "?featurebee=with-new-result-page=true");
+        if (url.contains("eaturebee")) {
+            WDUtil.getWebDriver().get(url.replace("<env>", Environment.Prod) + "|with-new-result-page=true");
+        } else {
+            WDUtil.getWebDriver().get(url.replace("<env>", Environment.Prod) + "?featurebee=with-new-result-page=true");
+        }
         WDUtil.getWebDriver().manage().addCookie(new Cookie("testmode", "true"));
 //        Set<Cookie> cookiesList =  WDUtil.getWebDriver().manage().getCookies();
 //        for(Cookie getcookies :cookiesList) {
