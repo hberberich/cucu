@@ -14,7 +14,7 @@ public class PriceEstimationResultPageObject {
     @FindBy(xpath = "//h3[@id='priceRangeLow']")
     public WebElement priceRangeLowDiv;
 
-    @FindBy(xpath = "//div[@id='priceRangeAvg']/p")
+    @FindBy(xpath = "//h3[@id='priceRangeMid']")
     public WebElement priceRangeAvgDiv;
 
     @FindBy(xpath = "//h3[@id='priceRangeHigh']")
@@ -34,15 +34,16 @@ public class PriceEstimationResultPageObject {
 
         UIUtil.waitForElementToBeClickable(adPlacementLink);
         String priceRangeLow = priceRangeLowDiv.getText();
-        //String priceRangeAvg = priceRangeAvgDiv.getText();
+        String priceRangeAvg = priceRangeAvgDiv.getText();
         String priceRangeHigh = priceRangeHighDiv.getText();
 
-        priceRangeLow = priceRangeLow.substring(2, priceRangeLow.length()-2).replace(".", "");
-        //priceRangeAvg = priceRangeAvg.substring(2, priceRangeAvg.length()-2).replace(".", "");
-        priceRangeHigh = priceRangeHigh.substring(2, priceRangeHigh.length()-2).replace(".", "");
+        priceRangeLow = priceRangeLow.replace("€ ", "").replace(".", "");
+        priceRangeAvg = priceRangeAvg.replace("€ ", "").replace(".", "");
+        priceRangeHigh = priceRangeHigh.replace("€ ", "").replace(".", "");
 
         assertTrue(Integer.parseInt(priceRangeHigh) > Integer.parseInt(priceRangeLow));
-        //assertTrue(Integer.parseInt(priceRangeAvg) > Integer.parseInt(priceRangeLow));
+        assertTrue(Integer.parseInt(priceRangeAvg) > Integer.parseInt(priceRangeLow));
+        System.out.print(priceRangeLow + " | " + priceRangeAvg  + " | " + priceRangeHigh  + " | ");
 
     }
 

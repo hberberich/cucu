@@ -11,11 +11,15 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
 public class PriceEstimationStepdefs {
+
+    @When("^Selecting make model list should be filled$")
+    public void selectingMakeModelListShouldBeFilled() throws Throwable {
+        new PriceEstimationInputPageObject().fillFormAndCheckModellList();
+    }
 
     @Given("^User opens price estimation tool on \"([^\"]*)\"$")
     public void userOpensPriceEstimationTool(String url) throws Throwable {
@@ -23,9 +27,9 @@ public class PriceEstimationStepdefs {
         if (url.contains("eaturebee")) {
             WDUtil.getWebDriver().get(url.replace("<env>", Environment.Prod) + "|with-new-result-page=true");
         } else {
-            WDUtil.getWebDriver().get(url.replace("<env>", Environment.Prod) + "?featurebee=with-new-result-page=true");
+            WDUtil.getWebDriver().get(url.replace("<env>", Environment.Prod)); //  + "?featurebee=price-range-with-medium=true|TATSU-997-mixed-models=true");
         }
-        WDUtil.getWebDriver().manage().addCookie(new Cookie("testmode", "true"));
+
 //        Set<Cookie> cookiesList =  WDUtil.getWebDriver().manage().getCookies();
 //        for(Cookie getcookies :cookiesList) {
 //            System.out.println(getcookies );
@@ -35,7 +39,7 @@ public class PriceEstimationStepdefs {
     @When("^User enters his car data \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" and submits$")
     public void userEntersHisCarDataAndSubmits(String makeId, String month, String year, String model, String fuel, String power, String equipmentline, String mileage ) throws Throwable {
 
-        new PriceEstimationPageObject().fillFormAndSubmit(makeId, month, year, model, fuel, power, equipmentline, mileage);
+        new PriceEstimationInputPageObject().fillFormAndSubmit(makeId, month, year, model, fuel, power, equipmentline, mileage);
         new PriceEstimationDetailPageObject().fillFormAndSubmit();
     }
 
@@ -48,15 +52,15 @@ public class PriceEstimationStepdefs {
     public void userEntersDefault(String carData) throws Throwable {
         switch (carData) {
             case "CarDataDE.DevProd":
-                new PriceEstimationPageObject().fillFormAndSubmit(CarDataDE.DevProd.makeId, CarDataDE.DevProd.firstRegistrationMonth, CarDataDE.DevProd.firstRegistrationYear, CarDataDE.DevProd.vehicleGroupId,
+                new PriceEstimationInputPageObject().fillFormAndSubmit(CarDataDE.DevProd.makeId, CarDataDE.DevProd.firstRegistrationMonth, CarDataDE.DevProd.firstRegistrationYear, CarDataDE.DevProd.vehicleGroupId,
                         CarDataDE.DevProd.fuelId, CarDataDE.DevProd.power, CarDataDE.DevProd.equipmentLine, CarDataDE.DevProd.mileage);
                 break;
             case "CarDataDE.LocalHost":
-                new PriceEstimationPageObject().fillFormAndSubmit(CarDataDE.LocalHost.makeId, CarDataDE.LocalHost.firstRegistrationMonth, CarDataDE.LocalHost.firstRegistrationYear, CarDataDE.LocalHost.vehicleGroupId,
+                new PriceEstimationInputPageObject().fillFormAndSubmit(CarDataDE.LocalHost.makeId, CarDataDE.LocalHost.firstRegistrationMonth, CarDataDE.LocalHost.firstRegistrationYear, CarDataDE.LocalHost.vehicleGroupId,
                         CarDataDE.LocalHost.fuelId, CarDataDE.LocalHost.power, CarDataDE.LocalHost.equipmentLine, CarDataDE.LocalHost.mileage);
                 break;
             case "CarDataDE.LocalDocker":
-                new PriceEstimationPageObject().fillFormAndSubmit(CarDataDE.LocalDocker.makeId, CarDataDE.LocalDocker.firstRegistrationMonth, CarDataDE.LocalDocker.firstRegistrationYear, CarDataDE.LocalDocker.vehicleGroupId,
+                new PriceEstimationInputPageObject().fillFormAndSubmit(CarDataDE.LocalDocker.makeId, CarDataDE.LocalDocker.firstRegistrationMonth, CarDataDE.LocalDocker.firstRegistrationYear, CarDataDE.LocalDocker.vehicleGroupId,
                         CarDataDE.LocalDocker.fuelId, CarDataDE.LocalDocker.power, CarDataDE.LocalDocker.equipmentLine, CarDataDE.LocalDocker.mileage);
                 break;
         }
@@ -70,12 +74,12 @@ public class PriceEstimationStepdefs {
 
     @When("^User changes language to \"([^\"]*)\"$")
     public void userChangesLanguageTo(String lang) throws Throwable {
-        new PriceEstimationPageObject().switchLanguage(lang);
+        new PriceEstimationInputPageObject().switchLanguage(lang);
     }
 
     @Then("^Page is shown with new \"([^\"]*)\"$")
     public void pageIsShownWithNew(String lang) throws Throwable {
-        new PriceEstimationPageObject().checkLanguage(lang);
+        new PriceEstimationInputPageObject().checkLanguage(lang);
     }
 
 
@@ -96,7 +100,7 @@ public class PriceEstimationStepdefs {
 
     @Before
     public void setup(Scenario scenario) throws Exception {
-        WDUtil.startDriver(Browsers.Firefox);
+        WDUtil.startDriver(Browsers.Chrome);
     }
     @After
     public void teardown(Scenario scenario) throws Exception {
@@ -111,9 +115,10 @@ public class PriceEstimationStepdefs {
         WDUtil.getWebDriver().quit();
     }
 
-
     @Then("^The right error page is shown with error messages \"([^\"]*)\" \"([^\"]*)\"$")
     public void theRightErrorPageIsShownWithErrorMessages(String errText, String errButtonText) throws Throwable {
         new ErrorPageObject().checkErrorPage(errText, errButtonText);
     }
+
 }
+

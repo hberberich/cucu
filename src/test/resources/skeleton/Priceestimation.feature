@@ -8,9 +8,9 @@ Feature: Priceestimation
     Then The price estimation is accurate
     Examples:
       | url                                            | makeId      | month | year | model                       | fuel    | power     | equipmentline                    | mileage |
-      | https://<env>.autoscout24.de/fahrzeugbewertung | Alfa Romeo  | 03    | 2011 | Giulietta Limousine 5 Türen | Benzin  | 170 (125) | 1.4 TB 16V Multiair              | 30000   |
-      | https://<env>.autoscout24.be/evaluationvoiture | Alfa Romeo  | 03    | 2011 | Giulietta Berline 5 Deuren  | Benzine | 170 (125) | 1.4i Multi Air Progression Start | 30000   |
-      | http://localhost:9000/fahrzeugbewertung?featurebee=use-last-showcar-ui-version=true        | Alfa Romeo  | 03    | 2011 | Giulietta Limousine 5 Türen | Benzin  | 170 (125) | Grundaustattung                  | 30000   |
+      | https://<env>.autoscout24.de/fahrzeugbewertung | Alfa Romeo  | 03    | 2011 | Giulietta Limousine 5 Türen | Benzin  | 125 (170) | 1.4 TB 16V Multiair              | 30000   |
+      | https://<env>.autoscout24.be/evaluationvoiture | Alfa Romeo  | 03    | 2011 | Giulietta Berline 5 Deuren  | Benzine | 125 (170) | 1.4i Multi Air Progression Start | 30000   |
+      #| http://localhost:9000/fahrzeugbewertung?featurebee=use-last-showcar-ui-version=true        | Alfa Romeo  | 03    | 2011 | Giulietta Limousine 5 Türen | Benzin  | 170 (125) | Grundaustattung                  | 30000   |
 
   @acceptance
   Scenario Outline: User wants a price estimation for his car using full model
@@ -19,10 +19,10 @@ Feature: Priceestimation
     And User selects all additional equipment
     Then The price estimation is accurate
     Examples:
-      | url                                          | cardata               |
-      #| https://<env>.autoscout24.de/fahrzeugbewertung| CarDataDE.DevProd |
+      | url                                           | cardata               |
+      | https://<env>.autoscout24.de/fahrzeugbewertung| CarDataDE.DevProd |
       #| http://192.168.99.100:8080/fahrzeugbewertung | CarDataDE.LocalDocker |
-      | http://localhost:9000/fahrzeugbewertung?featurebee=use-last-showcar-ui-version=true | CarDataDE.LocalHost |
+      #| http://localhost:9000/fahrzeugbewertung?featurebee=use-last-showcar-ui-version=true | CarDataDE.LocalHost |
 
   @acceptance
   Scenario Outline: User changes language on be site
@@ -35,16 +35,35 @@ Feature: Priceestimation
       | url                                        | lang | lang2 |
       | http://<env>.autoscout24.be/prijsschatting | FR   | NL    |
 
-  @acceptance
-  Scenario Outline: Display Standard Equipment on detail page
+  Scenario Outline: Loop Colors and equipment
     Given User opens price estimation tool on "<url>"
     When User enters default "<cardata>"
-    And User clicks link Standardausstattung einblenden
-    Then Standard Equipment is shown
+    And Selects additional equipment
     Examples:
-      | url                                           | cardata             |
-      | http://localhost:9000/fahrzeugbewertung?featurebee=use-last-showcar-ui-version=true       | CarDataDE.LocalHost |
-      #| http://<env>.autoscout24.de/fahrzeugbewertung | CarDataDE.DevProd   |
+      | url                                            | cardata           |
+      | https://<env>.autoscout24.de/fahrzeugbewertung | CarDataDE.DevProd |
+
+#  @acceptance
+#  Scenario Outline: Display Standard Equipment on detail page
+#    Given User opens price estimation tool on "<url>"
+#    When User enters default "<cardata>"
+#    And User clicks link Standardausstattung einblenden
+#    Then Standard Equipment is shown
+#    Examples:
+#      | url                                           | cardata             |
+#      #| http://localhost:9000/fahrzeugbewertung?featurebee=use-last-showcar-ui-version=true       | CarDataDE.LocalHost |
+#      | http://<env>.autoscout24.de/fahrzeugbewertung | CarDataDE.DevProd   |
+
+
+  @hardcorestuff
+  Scenario Outline: Check valid Make Model data
+    Given User opens price estimation tool on "<url>"
+    When Selecting make model list should be filled
+    Examples:
+      | url                                           |
+      #| http://local.docker.autoscout24.de:8080/fahrzeugbewertung |
+      #| http://<env>.autoscout24.de/fahrzeugbewertung |
+      #| http://<env>.autoscout24.be/evaluationvoiture |
 
   @acceptance
   Scenario Outline: Error codes are not shown to client
@@ -95,11 +114,9 @@ Feature: Priceestimation
 
 ###      | http://<env>.autoscout24.hu/gibtsnicht.html | A keresett oldal sajnos már nem létezik. | A kezdőlapra |
 
-
-#  Scenario Outline: Loop Colors and equipment
-#    Given User opens price estimation tool on "<url>"
-#    When User enters default "<cardata>"
-#    And Selects additional equipment
+#  Scenario Outline: Error codes are not shown
+#    Given User opens price estimation tool
 #    Examples:
-#      | url                                     | cardata  |
-#      | http://localhost:9000/fahrzeugbewertung | CarDataDE |
+#    # Creating 5xx Errors on Prod creates alerts !!!
+#      | url                                                    | errText                                                               | errButtonText      |
+#      | http://<env>.autoscout24.de/priceestimation/code/400  | Die gesuchte Seite existiert leider nicht mehr.                        | Zur Startseite     |

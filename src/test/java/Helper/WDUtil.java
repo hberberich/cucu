@@ -52,6 +52,8 @@ public class WDUtil {
         setBrowser(browser);
         driver.manage().window().maximize();
         driver.manage().window().setPosition(new Point(1921, 1));
+        //driver.manage().window().setPosition(new Point(521, 1));
+        //driver.manage().window().setSize(new Dimension(800, 900));
 
     }
     public static void startDriver(String url, String browser) {

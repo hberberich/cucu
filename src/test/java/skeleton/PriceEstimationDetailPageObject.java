@@ -51,6 +51,8 @@ public class PriceEstimationDetailPageObject {
     }
 
     public void fillFormAndSubmit() throws InterruptedException {
+        // Log number of Checkboxes for standard equipment:
+        System.out.print(WDUtil.getWebDriver().findElements(By.xpath("//input[@type='checkbox']")).size() + " | ");
         UIUtil.waitAndClick(modelSizeTopButton);
         //modelSizeTopButton.click();
 
@@ -67,7 +69,7 @@ public class PriceEstimationDetailPageObject {
         for (int i = 0; i < we.size(); i++) {
             names[i] =  we.get(i).getAttribute("name").toString();
             WebElement label = WDUtil.getWebDriver().findElement(By.xpath("//input[@name='" + names[i] + "']/../label"));
-            System.out.print(names[i] + "  " + label.getText() + ", ");
+            System.out.print(names[i] + "  " + label.getText() + ", " + we.get(i).getAttribute("disabled"));
             label.click();
         }
 //        for (int i = 0; i < we.size(); i++) {

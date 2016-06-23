@@ -18,6 +18,26 @@ public class UIUtil {
 
     }
 
+    public static void waitAndSelectByIndex(WebElement we, int index) {
+
+        WebElement myDynamicElement = (new WebDriverWait(WDUtil.getWebDriver(), 10))
+                .until(ExpectedConditions.elementToBeClickable(we));
+        try {
+            Select sel = new Select(we);
+            sel.selectByIndex(index);
+            //System.out.print(sel.getFirstSelectedOption().getText() + " | ");
+        } catch (Exception ex) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            new Select(we).selectByIndex(index);
+
+        }
+
+    }
+
     public static void waitAndClick(WebElement we) {
 
         WebElement myDynamicElement = (new WebDriverWait(WDUtil.getWebDriver(), 10))
@@ -28,9 +48,20 @@ public class UIUtil {
 
     public static void waitAndEnterText(WebElement we, String text) {
 
-        WebElement myDynamicElement = (new WebDriverWait(WDUtil.getWebDriver(), 10))
-                .until(ExpectedConditions.elementToBeClickable(we));
-        myDynamicElement.sendKeys(text);
+        try {
+            WebElement myDynamicElement = (new WebDriverWait(WDUtil.getWebDriver(), 10))
+                    .until(ExpectedConditions.elementToBeClickable(we));
+            myDynamicElement.sendKeys(text);
+        } catch (Exception ex) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            WebElement myDynamicElement = (new WebDriverWait(WDUtil.getWebDriver(), 10))
+                    .until(ExpectedConditions.elementToBeClickable(we));
+            myDynamicElement.sendKeys(text);
+        }
 
     }
 
