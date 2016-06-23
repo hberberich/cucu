@@ -1,11 +1,10 @@
-package stepdefs;
+package Unused;
 
 import cucumber.api.java.en.Given;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import skeleton.Belly;
 
 import static org.junit.Assert.assertTrue;
 
