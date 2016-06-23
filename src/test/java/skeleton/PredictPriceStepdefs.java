@@ -31,7 +31,7 @@ public class PredictPriceStepdefs {
         baseUrl += "&vehicleGroupId=" + makemodelId.substring(makemodelId.indexOf("_")+1) + "_" + bodyTypeId + "_5"; // ToDo: Check doors!
         baseUrl += "&fuelId=" + fuelId; //((fuelId.equals("B")) ? "ep.eid[121]=121" : "D"); // ToDo: Checl LOV
         month = getIntMonthForString(seasonMonth);
-        baseUrl += "0"; //"&firstRegistrationMonth=" + month;
+        //baseUrl += "&firstRegistrationMonth=" + month;
         baseUrl += "&firstRegistrationYear=" + fregYear;
         baseUrl += "&power=" + power;
         baseUrl += "&action=calc&modelSize=light";

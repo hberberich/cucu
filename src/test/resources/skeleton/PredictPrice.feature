@@ -1,5 +1,6 @@
-@priceestimation
-Feature: Priceestimation
+Feature: PredictPrice
+
+#See also: https://confluence.as24.local/display/TechnologyChange/PE+Parameters
 
   Scenario Outline: Predicted prices from Data scientists match displayed prices with light model
     Given User opens price estimation tool on "<url>"
