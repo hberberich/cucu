@@ -4,6 +4,11 @@ import Helper.WDUtil;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -177,5 +182,89 @@ public class PredictPriceStepdefs {
         String month = ((monthInt < 10) ? "0" : "") + monthInt;
         return month;
     }
-}
 
+    @Given("^Test data full model \"([^\"]*)\" \"([^\"]*)\"$")
+    public void testDataFullModel(String testDataFile, String url) throws Throwable {
+
+        String resultUrl = "";
+
+        resultUrl= url + readTestData(testDataFile);
+        WDUtil.getWebDriver().get(resultUrl);
+
+    }
+
+    private String readTestData(String testDataFile)  throws Throwable{
+        String[] columns = null;
+        String[] testData = null;
+        BufferedReader br = null;
+        String line;
+        try {
+            System.out.println(System.getProperty("user.dir"));
+            br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/test/resources/testdata/" + testDataFile));
+            columns = br.readLine().split(",");
+            System.out.println(columns.length);
+            while ((line = br.readLine()) != null) {
+                testData = line.split(",");
+                System.out.println(line.split(",").length);
+            }
+            if (columns.length != testData.length) throw new IllegalArgumentException("Number of Params do not match: Columns = " + columns.length + " Testdata = " + testData.length);
+            return createUrl(columns, testData);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    private String createUrl(String[] columns, String[] testData) throws MalformedURLException, ParseException {
+        String baseUrl = "";
+        String model = null;
+        String body_type_id = null;
+        String doors = null;
+        String eqID = null;
+
+        for (int i = 0; i < columns.length; i ++) {
+            columns[i] = columns[i].replace("\"", "");
+            testData[i] = testData[i].replace("\"", "");
+            System.out.println(columns[i] + " " + testData[i]);
+            switch (columns[i]) {
+                case "MAKEMODEL_ID": baseUrl += "&makeId=" + testData[i].substring(0, testData[i].indexOf("_")); model = testData[i].substring(testData[i].indexOf("_")+1); break;
+                case "MILEAGE": baseUrl += "&mileage=" + testData[i]; break;
+                case "DOORS": baseUrl += "&ep.doors=" + testData[i]; doors = testData[i]; break;
+                case "FUEL_ID": baseUrl += "&fuelId=" + testData[i]; break;
+                case "SEASON_MONTH": baseUrl += "&firstRegistrationMonth=" + getIntMonthForString(testData[i]); break;
+                case "FREG_YEAR": baseUrl += "&firstRegistrationYear=" + testData[i]; break;
+                case "POWER": baseUrl += "&power=" + testData[i]; break;
+                case "BODY_COLOR_ID": baseUrl += "&ep.bodyColorId=" + testData[i]; break;
+                case "EMISSION_CLASS_ID": baseUrl += "&ep.emissionClassId=" + testData[i]; break;
+                case "CONSUMPTION": baseUrl += "&ep.consumption=" + testData[i]; break;
+                case "BODY_TYPE_ID": body_type_id = testData[i]; break;
+            }
+
+            if (columns[i].startsWith("EQUIPMENT_ID_") && testData[i].equals("1")) {
+                eqID = columns[i].substring(13);
+                baseUrl += "&ep.eid[" + eqID + "]=" + eqID;
+            }
+        }
+
+        baseUrl += "&natCode=" + "65544" ;// Peugeot Belgien
+        baseUrl += "&vehicleGroupId=" + model + "_" + body_type_id + "_" + doors;
+        baseUrl += "&equipmentLine=" + "SomeEquipmentLine";
+        baseUrl += "&action=calc&modelSize=full";
+        baseUrl = baseUrl.replaceFirst("&", "?");
+        System.out.println(baseUrl);
+        System.out.println();
+
+        return baseUrl;
+
+    }
+}
